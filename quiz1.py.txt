@@ -1,0 +1,39 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+
+df = pd.read_csv('survey_results_public.csv')
+df_filtered = df[['country', 'population']] 
+
+df_indexed = df.set_index('country') 
+
+# 2 პარამეტრზე დამოკიდებული ფილტრი
+def filter_data(df, population_min, population_max):
+
+return df[(df['population'] >= population_min) & (df['population'] <= population_max)]
+
+df_filtered = filter_data(df_filtered, 1000000, 2000000)
+
+# დასორტირება
+df_filtered = df_filtered.sort_values(by=['population'], ascending=False)
+
+df_filtered['population_mean'] = df_filtered['population'].mean()
+df_filtered['population_std'] = df_filtered['population'].std()
+df_filtered['population_median'] = df_filtered['population'].median()
+df_filtered['population_min'] = df_filtered['population'].min()
+df_filtered['population_max'] = df_filtered['population'].max()
+
+fig, ax = plt.subplots(2, 1)
+
+# Bar დიაგრამა
+ax[0].bar(df_filtered['country'], df_filtered['population'])
+ax[0].set_xlabel('Country')
+ax[0].set_ylabel('Population')
+ax[0].set_title('Bar Chart of Population by Country')
+
+# Line დიაგრამა
+ax[1].plot(df_filtered['country'], df_filtered['population'])
+ax[1].set_xlabel('Country')
+ax[1].set_ylabel('Population')
+ax[1].set_title('Line Chart of Population by Country')
+
+plt.show()
